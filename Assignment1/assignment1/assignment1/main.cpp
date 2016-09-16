@@ -1,5 +1,6 @@
 #include "glsupport.h"
 #include <iostream>
+
 // global variables
 GLuint program;
 GLuint myTexture;

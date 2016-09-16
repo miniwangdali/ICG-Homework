@@ -71,6 +71,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
+    <OutDir>$(ProjectDir)$(Configuration)</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -131,6 +135,9 @@
   <ItemGroup>
     <None Include="fragment.glsl" />
     <None Include="vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Microsoft.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

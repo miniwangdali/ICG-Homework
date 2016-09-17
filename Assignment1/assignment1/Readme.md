@@ -11,7 +11,7 @@ In this folder, you can see a folder called Release. Go into this folder and run
 
 ## How to Play?
 It is a simple program that render a rectangle in two different position on the screen with the same buffer. Also, you could __CLICK and DRAG (HOLD & MOVE)__ your mouse to make the picture moving with your mouse. That is the point for Bonus in demand, which is finished by using a uniform based on input to change the texture coordinate.
-![Image of Playing](https://github.com/miniwangdali/ICG-Homework/Assignment1/assignment1/assignment1.gif)
+![Image of Playing](https://github.com/miniwangdali/ICG-Homework/blob/master/Assignment1/assignment1/assignment1.gif)
 
 ## How to Compile?
 I use Visual Studio to build this solution. So I did not write any makefile. So if you could use a Visual Studio 2015, it's easy for you to open this solution and build it by using the IDE.

@@ -1,5 +1,5 @@
 # Instruction
-This is the solution of assignment1. The solution is write and build with Visual Studio 2015 Community Edition in Windows 10 Pro 64-bit version 14393.187 (1607). So I do not have the instruction for Linux and Mac OS.
+This is the solution of assignment1. The solution is writen and built with Visual Studio 2015 Community Edition in Windows 10 Pro 64-bit version 14393.187 (1607). So I do not have the instruction for Linux and Mac OS.
 
 ## Demand and Accomplishment
 - [x] Render a rectangle as a pair of triangles textured with an image of your choice in two different positions on screen.

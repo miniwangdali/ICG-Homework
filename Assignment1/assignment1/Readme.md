@@ -7,6 +7,7 @@ This is the solution of assignment1.
 - [x] **Bonus:** Add a uniform to the fragment shader and change the color or texture coordinate of the final pixel based on input.
 
 ## How to Run?
+### Windows
 In this folder, you can see a folder called Release. Go into this folder and run the "assignment1.exe". Then it will show on your screen.
 
 ## How to Play?
@@ -15,6 +16,6 @@ It is a simple program that render a rectangle in two different position on the 
 ![Image of Playing](https://github.com/miniwangdali/ICG-Homework/blob/master/Assignment1/assignment1/assignment1.gif)
 
 
-
 ## How to Compile?
+### Windows
 I use Visual Studio to build this solution. So I did not write any makefile. So if you could use a Visual Studio 2015, it's easy for you to open this solution and build it by using the IDE.

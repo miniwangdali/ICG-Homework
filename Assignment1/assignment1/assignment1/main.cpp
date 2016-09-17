@@ -1,5 +1,7 @@
 #include "glsupport.h"
 #include <iostream>
+#include <direct.h>
+#include <cstring>
 
 // global variables
 GLuint program;
@@ -66,6 +68,14 @@ void init() {
 
 	glUseProgram(program);
 
+	/*char bufferFilePath[MAX_PATH];
+	if (_getcwd(bufferFilePath, MAX_PATH) == NULL) {
+		perror("getcwd error");
+	}
+	else {
+		strcat(bufferFilePath, "\\Microsoft.png");
+		printf("%s", bufferFilePath);
+	}*/
 	myTexture = loadGLTexture("Microsoft.png");
 
 	// get attributes
@@ -128,5 +138,6 @@ int main(int argc, char **argv) {
 
 	init();
 	glutMainLoop();
+	system("pause");
 	return 0;
 }

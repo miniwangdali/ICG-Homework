@@ -16,4 +16,7 @@ It is a simple program that render a rectangle in two different position on the 
 
 
 ## How to Compile?
-I use Visual Studio to build this solution. So I did not write any makefile. So if you could use a Visual Studio 2015, it's easy for you to open this solution and build it by using the IDE.
+I use Visual Studio to build this solution. So I did not write any makefile. So if you could use a Visual Studio 2015, it's easy for you to open this solution and build it by using the IDE. I put the dependency of OpenGL under the directory of VC of VisualStudio, as below:
+- .h/.cpp IN %VSFileDir/VC/include
+- .lib IN %VSFileDir/VC/lib
+- .dll IN same folder with the executable files

@@ -1,4 +1,4 @@
-#include "glsupport.h"
+﻿#include "glsupport.h"
 #include <iostream>
 #include <direct.h>
 #include <cstring>

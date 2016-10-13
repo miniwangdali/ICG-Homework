@@ -153,6 +153,7 @@ void display(void) {
 	entityLv2.transform.translation = Cvec3(2.0, 0.0, 0.0);
 	entityLv2.parent = &entityLv1;
 	entityLv2.transform.rotationY = 45.0 * (float)time / 1000.0f;
+	entityLv2.transform.scale = Cvec3(1.5, 1.0, 1.0);
 
 	entityLv3.geometry = cubeLv3;
 	entityLv3.transform.translation = Cvec3(0.0, 2.0, 0.0);

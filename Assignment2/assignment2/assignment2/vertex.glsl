@@ -1,11 +1,12 @@
 attribute vec4 position;
-attribute vec2 texCoord;
+attribute vec4 normal;
 
-varying vec2 varyingTexCoord;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform mat4 normalMatrix;
 
-uniform vec2 modelPosition;
-
+varying vec4 varyingNormal;
 void main(){
-	varyingTexCoord = texCoord;
-	gl_Position = vec4(modelPosition.x, modelPosition.y, 0.0, 0.0) + position;
+	gl_Position = projectionMatrix * modelViewMatrix * position;
+	varyingNormal = normalMatrix * normal;
 }

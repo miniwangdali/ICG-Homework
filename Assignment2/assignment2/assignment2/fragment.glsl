@@ -1,7 +1,8 @@
-varying vec2 varyingTexCoord;
-uniform sampler2D texture;
-uniform vec2 mousePos;
+varying vec4 varyingNormal;
+uniform vec3 uniformColor;
 
 void main() {
-	gl_FragColor = texture2D(texture, varyingTexCoord + mousePos);
+	float diffuse = max(0.0, dot(varyingNormal, vec4(-0.5773, 0.5773, 0.5773, 0.0)));
+	vec3 intensity = uniformColor * diffuse;
+	gl_FragColor = vec4(intensity.xyz, 1.0);
 }

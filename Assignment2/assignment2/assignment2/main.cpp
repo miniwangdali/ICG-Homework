@@ -1,41 +1,185 @@
 #include "glsupport.h"
+#include "matrix4.h"
+#include "geometrymaker.h"
+#include "quat.h"
+
 #include <iostream>
 #include <direct.h>
 #include <cstring>
+#include <vector>
 
 // global variables
 GLuint program;
-GLuint myTexture;
-// VBOs
-GLuint vertexPositionVBO;
-GLuint textureCoordinateVBO;
+
 // attributes
 GLuint positionAttribute;
-GLuint textureCoordinateAttribute;
+GLuint normalAttribute;
 // uniform
-GLuint positionUniform;
+GLuint projectionMatrixUniformLocation;
+GLuint modelViewMatrixUniformLocation;
+GLuint normalMatrixUniformLocation;
+GLuint colorUniformLocation;
+
+struct VertexPN {
+	Cvec3f position, normal;
+	VertexPN() {};
+	VertexPN(float posX, float posY, float posZ, float normalX, float normalY, float normalZ) : position(posX, posY, posZ), normal(normalX, normalY, normalZ) {};
+	VertexPN& operator = (const GenericVertex& v) {
+		position = v.pos;
+		normal = v.normal;
+		return *this;
+	}
+};
+struct Transform {
+	//Quat rotation;
+	float rotationX;
+	float rotationY;
+	float rotationZ;
+	Cvec3 scale;
+	Cvec3 translation;
+	Transform() : scale(1.0, 1.0, 1.0), translation(0.0, 0.0, 0.0) {};
+	Matrix4 createMatrix() {
+		Matrix4 origin;
+		origin = origin.makeScale(scale) * origin;
+		origin = origin.makeXRotation(rotationX) * origin;
+		origin = origin.makeYRotation(rotationY) * origin;
+		origin = origin.makeZRotation(rotationZ) * origin;
+		origin = origin.makeTranslation(translation) * origin;
+		return origin;
+	}
+};
+class Geometry{
+protected:
+	GLuint vertexBufferObject;
+	GLuint indexBufferObject;
+	int numIndices;
+public:
+	virtual void Draw(GLuint positionAttribute, GLuint normalAttribute) = 0;
+};
+struct Entity {
+	Transform transform;
+	Geometry *geometry;
+	Entity *parent;
+	Entity() : parent(nullptr) {};
+	void Draw(Matrix4 &eyeInverse, GLuint positionAttribute, GLuint normalAttribute,
+		GLuint modelviewMatrixUniformLocation, GLuint normalMatrixUniformLocation) {
+		Matrix4 modelViewMatrix = eyeInverse * getTransformMatrix();
+
+		GLfloat glMatrix[16];
+		modelViewMatrix.writeToColumnMajorMatrix(glMatrix);
+		glUniformMatrix4fv(modelViewMatrixUniformLocation, 1, false, glMatrix);
+
+		Matrix4 normalMatrix = transpose(inv(modelViewMatrix));
+		GLfloat glNormalMatrix[16];
+		normalMatrix.writeToColumnMajorMatrix(glNormalMatrix);
+		glUniformMatrix4fv(normalMatrixUniformLocation, 1, false, glNormalMatrix);
+
+		geometry->Draw(positionAttribute, normalAttribute);
+	}
+	Matrix4 getTransformMatrix() {
+		if (parent == nullptr) return transform.createMatrix();
+		else {
+			return parent->getTransformMatrix() * transform.createMatrix();
+		}
+	}
+};
+class Cube : public Geometry {
+public:
+	Cube(float length) {
+		int vertexBufferLength, indexBufferLength;
+		getCubeVbIbLen(vertexBufferLength, indexBufferLength);
+		numIndices = indexBufferLength;
+		std::vector<VertexPN> vertices(vertexBufferLength);
+		std::vector<unsigned short> indices(indexBufferLength);
+		makeCube(length, vertices.begin(), indices.begin());
+		// create vertex position VBOs
+		glGenBuffers(1, &vertexBufferObject);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPN) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+		// create vertex index VBOs
+		glGenBuffers(1, &indexBufferObject);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * indices.size(), indices.data(), GL_STATIC_DRAW);
+	}
+	void Draw(GLuint positionAttribute, GLuint normalAttribute) {
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		glEnableVertexAttribArray(positionAttribute);
+		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, position));
+
+		glEnableVertexAttribArray(normalAttribute);
+		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, normal));
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+
+		glDisableVertexAttribArray(positionAttribute);
+		glDisableVertexAttribArray(normalAttribute);
+	}
+};
+
+
+Cube* cubeLv1 = nullptr;
+Cube* cubeLv2 = nullptr;
+Cube* cubeLv3 = nullptr;
+
+Entity entityLv1;
+Entity entityLv2;
+Entity entityLv3;
+
 void display(void) {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(program);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vertexPositionVBO);
-	glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0); // each point has 2 value for position
-	glEnableVertexAttribArray(positionAttribute);
+	if (cubeLv1 == nullptr) {
+		cubeLv1 = new Cube(1.0f);
+	}
+	if (cubeLv2 == nullptr) {
+		cubeLv2 = new Cube(1.0f);
+	}
+	if (cubeLv3 == nullptr) {
+		cubeLv3 = new Cube(1.0f);
+	}
+	
+	int time = glutGet(GLUT_ELAPSED_TIME);
+	
+	entityLv1.geometry = cubeLv1;
+	//Quat rotationX = Quat::makeXRotation(45.0 * (float)time / 1000.0f);
+	//entity.transform.rotation = rotationX;
+	entityLv1.transform.rotationX = 45.0 * (float)time / 1000.0f;
+	
 
-	glBindBuffer(GL_ARRAY_BUFFER, textureCoordinateVBO);
-	glVertexAttribPointer(textureCoordinateAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(textureCoordinateAttribute);
-	glBindTexture(GL_TEXTURE_2D, myTexture);
+	entityLv2.geometry = cubeLv2;
+	entityLv2.transform.translation = Cvec3(2.0, 0.0, 0.0);
+	entityLv2.parent = &entityLv1;
+	entityLv2.transform.rotationY = 45.0 * (float)time / 1000.0f;
 
-	glUniform2f(positionUniform, -0.5, 0.0);
-	glDrawArrays(GL_TRIANGLES, 0, 6); // draw
+	entityLv3.geometry = cubeLv3;
+	entityLv3.transform.translation = Cvec3(0.0, 2.0, 0.0);
+	entityLv3.parent = &entityLv2;
+	entityLv3.transform.rotationZ = 45.0 * (float)time / 1000.0f;
 
-	glUniform2f(positionUniform, 0.5, 0.0);
-	glDrawArrays(GL_TRIANGLES, 0, 6); // draw
+	Matrix4 eyeMatrix;
+	// look at origin point (0, 0, 0)
+	eyeMatrix = eyeMatrix.makeTranslation(Cvec3(0.0, 0.0, 10.0));
 
-	glDisableVertexAttribArray(positionAttribute);
-	glDisableVertexAttribArray(textureCoordinateAttribute);
+
+	Matrix4 projectionMatrix;
+	projectionMatrix = projectionMatrix.makeProjection(45.0, 1.0, -0.1, -100.0);
+
+	GLfloat glMatrixProjection[16];
+	projectionMatrix.writeToColumnMajorMatrix(glMatrixProjection);
+	glUniformMatrix4fv(projectionMatrixUniformLocation, 1, false, glMatrixProjection);
+
+	
+	glUniform3f(colorUniformLocation, 0.4f, 0.8f, 1.0f);
+
+	//cube->Draw(positionAttribute, normalAttribute);
+
+	entityLv1.Draw(inv(eyeMatrix), positionAttribute, normalAttribute, modelViewMatrixUniformLocation, normalMatrixUniformLocation);
+	entityLv2.Draw(inv(eyeMatrix), positionAttribute, normalAttribute, modelViewMatrixUniformLocation, normalMatrixUniformLocation);
+	entityLv3.Draw(inv(eyeMatrix), positionAttribute, normalAttribute, modelViewMatrixUniformLocation, normalMatrixUniformLocation);
+
 
 	glutSwapBuffers();
 }
@@ -46,64 +190,39 @@ void idle(void) {
 	glutPostRedisplay();
 }
 
-
 void init() {
 	// need to initialize glew before create program
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 		throw std::runtime_error("glewInit failed");
+	glClearDepth(0.0f);
+
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_GREATER);
+	glReadBuffer(GL_BACK);
 
 	program = glCreateProgram();
 	readAndCompileShader(program, "vertex.glsl", "fragment.glsl");
 
 	glUseProgram(program);
 
-	myTexture = loadGLTexture("Microsoft.png");
-
 	// get attributes
 	positionAttribute = glGetAttribLocation(program, "position");
-	textureCoordinateAttribute = glGetAttribLocation(program, "texCoord");
-
+	normalAttribute = glGetAttribLocation(program, "normal");
 	//get uniform
-	positionUniform = glGetUniformLocation(program, "modelPosition");
-
-	// create vertex position VBOs
-	glGenBuffers(1, &vertexPositionVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexPositionVBO);
-	GLfloat rectangleVertex[12] = { // 2 * 3 * 2
-									// first triangle
-		-0.5f, -0.5f,
-		0.5f, 0.5f,
-		0.5, -0.5f,
-		// second triangle
-		-0.5f, -0.5f,
-		-0.5f, 0.5f,
-		0.5f, 0.5f
-	};
-	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), rectangleVertex, GL_STATIC_DRAW);
-
-	// create texture coodinate VBOs
-	glGenBuffers(1, &textureCoordinateVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, textureCoordinateVBO);
-	GLfloat textureCoordinate[12] = { // 2 * 3 * 2
-									  // first triangle
-		0.0f, 1.0f,
-		1.0f, 0.0f,
-		1.0, 1.0f,
-		// second triangle
-		0.0f, 1.0f,
-		0.0f, 0.0f,
-		1.0f, 0.0f
-	};
-	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), textureCoordinate, GL_STATIC_DRAW);
-
+	modelViewMatrixUniformLocation = glGetUniformLocation(program, "modelViewMatrix");
+	projectionMatrixUniformLocation = glGetUniformLocation(program, "projectionMatrix");
+	normalMatrixUniformLocation = glGetUniformLocation(program, "normalMatrix");
+	colorUniformLocation = glGetUniformLocation(program, "uniformColor");
 }
 
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(500, 500);
-	glutCreateWindow("Assignment1");
+	glutCreateWindow("Assignment2");
 
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);

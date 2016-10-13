@@ -1,0 +1,13 @@
+﻿  main.cpp
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(149): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(155): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(160): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\geometrymaker.h(60): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(94): note: see reference to function template instantiation 'void makeCube<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<VertexPN>>>,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<unsigned short>>>>(float,VtxOutIter,IdxOutIter)' being compiled
+          with
+          [
+              VtxOutIter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<VertexPN>>>,
+              IdxOutIter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<unsigned short>>>
+          ]
+  assignment2.vcxproj -> F:\学习资料\留学\Interactive Computer Graphics\ICG-Homework\Assignment2\assignment2\Debug\assignment2.exe
+  assignment2.vcxproj -> F:\学习资料\留学\Interactive Computer Graphics\ICG-Homework\Assignment2\assignment2\Debug\assignment2.pdb (Partial PDB)

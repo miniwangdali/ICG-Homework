@@ -24,3 +24,4 @@ I use Visual Studio to build this solution. So I did not write any makefile. So 
         - **EntityLv2**: a Cube geometry with a transform of rotation on Y asix, scale for 1.5 times on X axis, translation for 1 unit on X axis. 
             - **EntityLv3**: a Cube geometry with a transform of rotation on Z axis, translation for 1 unit on Y axis.
 - V1.0 does not implement **lookAt** method.
+- V1.1 implements **lookAt** as **"makeLookAt()"** method. The eye position is (10, 10, 10).

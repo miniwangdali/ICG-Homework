@@ -7,6 +7,7 @@
 #include <direct.h>
 #include <cstring>
 #include <vector>
+#include <math.h>
 
 // global variables
 GLuint program;
@@ -40,11 +41,11 @@ struct Transform {
 	Transform() : scale(1.0, 1.0, 1.0), translation(0.0, 0.0, 0.0) {};
 	Matrix4 createMatrix() {
 		Matrix4 origin;
-		origin = origin.makeScale(scale) * origin;
-		origin = origin.makeXRotation(rotationX) * origin;
-		origin = origin.makeYRotation(rotationY) * origin;
-		origin = origin.makeZRotation(rotationZ) * origin;
-		origin = origin.makeTranslation(translation) * origin;
+		origin = Matrix4::makeScale(scale) * origin;
+		origin = Matrix4::makeXRotation(rotationX) * origin;
+		origin = Matrix4::makeYRotation(rotationY) * origin;
+		origin = Matrix4::makeZRotation(rotationZ) * origin;
+		origin = Matrix4::makeTranslation(translation) * origin;
 		return origin;
 	}
 };
@@ -126,6 +127,30 @@ Entity entityLv1;
 Entity entityLv2;
 Entity entityLv3;
 
+Matrix4 makeLookAt(Cvec3 eye, Cvec3 center, Cvec3 up) {
+	Matrix4 eyeMatrix;
+	Cvec3 z = normalize(eye - center);
+	Cvec3 y = normalize(up);
+	Cvec3 x = cross(y, z);
+	eyeMatrix[0] = x[0];
+	eyeMatrix[1] = y[0];
+	eyeMatrix[2] = z[0];
+	eyeMatrix[3] = eye[0];
+	eyeMatrix[4] = x[1];
+	eyeMatrix[5] = y[1];
+	eyeMatrix[6] = z[1];
+	eyeMatrix[7] = eye[1];
+	eyeMatrix[8] = x[2];
+	eyeMatrix[9] = y[2];
+	eyeMatrix[10] = z[2];
+	eyeMatrix[11] = eye[2];
+	eyeMatrix[12] = 0.0;
+	eyeMatrix[13] = 0.0;
+	eyeMatrix[14] = 0.0;
+	eyeMatrix[15] = 1.0;
+	return eyeMatrix;
+}
+
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -162,7 +187,8 @@ void display(void) {
 
 	Matrix4 eyeMatrix;
 	// look at origin point (0, 0, 0)
-	eyeMatrix = eyeMatrix.makeTranslation(Cvec3(0.0, 0.0, 10.0));
+	//eyeMatrix = eyeMatrix.makeTranslation(Cvec3(0.0, 0.0, 10.0));
+	eyeMatrix = makeLookAt(Cvec3(10.0, 10.0, 10.0), Cvec3(0.0, 0.0, 0.0), Cvec3(0.0, 1.0, 0.0));
 
 
 	Matrix4 projectionMatrix;

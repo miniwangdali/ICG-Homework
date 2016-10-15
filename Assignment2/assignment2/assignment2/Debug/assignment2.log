@@ -1,9 +1,9 @@
 ﻿  main.cpp
-f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(149): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(155): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(161): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(174): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(180): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(186): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\geometrymaker.h(60): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(94): note: see reference to function template instantiation 'void makeCube<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<VertexPN>>>,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<unsigned short>>>>(float,VtxOutIter,IdxOutIter)' being compiled
+  f:\学习资料\留学\interactive computer graphics\icg-homework\assignment2\assignment2\assignment2\main.cpp(95): note: see reference to function template instantiation 'void makeCube<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<VertexPN>>>,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<unsigned short>>>>(float,VtxOutIter,IdxOutIter)' being compiled
           with
           [
               VtxOutIter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<VertexPN>>>,

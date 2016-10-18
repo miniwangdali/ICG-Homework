@@ -56,7 +56,20 @@ protected:
 	GLuint indexBufferObject;
 	int numIndices;
 public:
-	virtual void Draw(GLuint positionAttribute, GLuint normalAttribute) = 0;
+	void Draw(GLuint positionAttribute, GLuint normalAttribute) {
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		glEnableVertexAttribArray(positionAttribute);
+		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, position));
+
+		glEnableVertexAttribArray(normalAttribute);
+		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, normal));
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+
+		glDisableVertexAttribArray(positionAttribute);
+		glDisableVertexAttribArray(normalAttribute);
+	};
 };
 struct Entity {
 	Transform transform;
@@ -102,20 +115,6 @@ public:
 		glGenBuffers(1, &indexBufferObject);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * indices.size(), indices.data(), GL_STATIC_DRAW);
-	}
-	void Draw(GLuint positionAttribute, GLuint normalAttribute) {
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-		glEnableVertexAttribArray(positionAttribute);
-		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, position));
-
-		glEnableVertexAttribArray(normalAttribute);
-		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (void*)offsetof(VertexPN, normal));
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
-
-		glDisableVertexAttribArray(positionAttribute);
-		glDisableVertexAttribArray(normalAttribute);
 	}
 };
 

@@ -27,3 +27,4 @@ I use Visual Studio to build this solution. So I did not write any makefile. So 
 - V1.0 does not implement **lookAt** method.
 - V1.1 implements **lookAt** as ```makeLookAt()``` method. The eye position is (10, 10, 10).
 - V1.2 uses **Quat** for rotation in ```Transform```.
+- V1.3 implement ```Draw()``` in ```Geometry``` rather than in cube

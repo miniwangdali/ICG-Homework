@@ -18,10 +18,12 @@ I use Visual Studio to build this solution. So I did not write any makefile. So 
 - .dll IN same folder with the executable files
 
 ## Additional Detail
-- I use makeRotation methods in **Matrix4** rather than using **Quat** to implement rotation.
+- Before V1.2, I used makeRotation methods in **Matrix4** rather than using **Quat** to implement rotation.
+- In V1.2, I used **Quat** to implement rotation.
 - My three entities is organized as following hierarchy
     - **EntityLv1**: a Cube geometry with a transform of rotation on X axis.
         - **EntityLv2**: a Cube geometry with a transform of rotation on Y asix, scale for 1.5 times on X axis, translation for 1 unit on X axis. 
             - **EntityLv3**: a Cube geometry with a transform of rotation on Z axis, translation for 1 unit on Y axis.
 - V1.0 does not implement **lookAt** method.
 - V1.1 implements **lookAt** as **"makeLookAt()"** method. The eye position is (10, 10, 10).
+- V1.2 uses **Quat** for rotation in '''Transform'''.

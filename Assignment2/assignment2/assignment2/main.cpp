@@ -32,19 +32,20 @@ struct VertexPN {
 	}
 };
 struct Transform {
-	//Quat rotation;
-	float rotationX;
-	float rotationY;
-	float rotationZ;
+	Quat rotation;
+	//float rotationX;
+	//float rotationY;
+	//float rotationZ;
 	Cvec3 scale;
 	Cvec3 translation;
 	Transform() : scale(1.0, 1.0, 1.0), translation(0.0, 0.0, 0.0) {};
 	Matrix4 createMatrix() {
 		Matrix4 origin;
 		origin = Matrix4::makeScale(scale) * origin;
-		origin = Matrix4::makeXRotation(rotationX) * origin;
-		origin = Matrix4::makeYRotation(rotationY) * origin;
-		origin = Matrix4::makeZRotation(rotationZ) * origin;
+		//origin = Matrix4::makeXRotation(rotationX) * origin;
+		//origin = Matrix4::makeYRotation(rotationY) * origin;
+		//origin = Matrix4::makeZRotation(rotationZ) * origin;
+		origin = quatToMatrix(rotation) * origin;
 		origin = Matrix4::makeTranslation(translation) * origin;
 		return origin;
 	}
@@ -171,19 +172,22 @@ void display(void) {
 	entityLv1.geometry = cubeLv1;
 	//Quat rotationX = Quat::makeXRotation(45.0 * (float)time / 1000.0f);
 	//entity.transform.rotation = rotationX;
-	entityLv1.transform.rotationX = 45.0 * (float)time / 1000.0f;
+	//entityLv1.transform.rotationX = 45.0 * (float)time / 1000.0f;
+	entityLv1.transform.rotation = Quat::makeXRotation(45.0 * (float)time / 1000.0f);
 	
 
 	entityLv2.geometry = cubeLv2;
 	entityLv2.transform.translation = Cvec3(2.0, 0.0, 0.0);
 	entityLv2.parent = &entityLv1;
-	entityLv2.transform.rotationY = 45.0 * (float)time / 1000.0f;
+	//entityLv2.transform.rotationY = 45.0 * (float)time / 1000.0f;
+	entityLv2.transform.rotation = Quat::makeYRotation(45.0 * (float)time / 1000.0f);
 	entityLv2.transform.scale = Cvec3(1.5, 1.0, 1.0);
 
 	entityLv3.geometry = cubeLv3;
 	entityLv3.transform.translation = Cvec3(0.0, 2.0, 0.0);
 	entityLv3.parent = &entityLv2;
-	entityLv3.transform.rotationZ = 45.0 * (float)time / 1000.0f;
+	//entityLv3.transform.rotationZ = 45.0 * (float)time / 1000.0f;
+	entityLv3.transform.rotation = Quat::makeZRotation(45.0 * (float)time / 1000.0f);
 
 	Matrix4 eyeMatrix;
 	// look at origin point (0, 0, 0)

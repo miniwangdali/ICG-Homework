@@ -1,0 +1,5 @@
+﻿  main.cpp
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment3\assignment3\assignment3\main.cpp(106): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment3\assignment3\assignment3\main.cpp(108): warning C4267: 'argument': conversion from 'size_t' to 'unsigned short', possible loss of data
+  assignment3.vcxproj -> F:\学习资料\留学\Interactive Computer Graphics\ICG-Homework\Assignment3\assignment3\Debug\assignment3.exe
+  assignment3.vcxproj -> F:\学习资料\留学\Interactive Computer Graphics\ICG-Homework\Assignment3\assignment3\Debug\assignment3.pdb (Partial PDB)

@@ -10,6 +10,7 @@
 #include <cstring>
 #include <vector>
 #include <math.h>
+#include <algorithm>
 
 // global variables
 GLuint program;
@@ -28,6 +29,9 @@ GLuint normalMatrixUniformLocation;
 GLuint diffuseTextureUniformLocation;
 GLuint specularTextureUniformLocation;
 GLuint normalTextureUniformLocation;
+
+int windowHeight = 800;
+int windowWidth = 800;
 
 struct Light {
 	GLuint lightPositionUniformLocation;
@@ -272,10 +276,10 @@ void display(void) {
 	glUniformMatrix4fv(projectionMatrixUniformLocation, 1, false, glMatrixProjection);
 
 
-	glUniform3f(lights[0].lightPositionUniformLocation, 10.0f, 10.0f, 10.0f);
-	glUniform3f(lights[0].lightColorUniformLocation, 1.0f, 1.0f, 1.0f);
-	glUniform3f(lights[0].specularLightColorUniformLocation, 1.0f, 1.0f, 1.0f);
-	glUniform3f(lights[1].lightPositionUniformLocation, -10.0f, 10.0f, 10.0f);
+	glUniform3f(lights[0].lightPositionUniformLocation, 20.0f, 20.0f, 0.0f);
+	glUniform3f(lights[0].lightColorUniformLocation, 0.87890625f, 0.0f, 0.0f);
+	glUniform3f(lights[0].specularLightColorUniformLocation, 0.87890625f, 0.0f, 0.0f);
+	glUniform3f(lights[1].lightPositionUniformLocation, -20.0f, 20.0f, 0.0f);
 	glUniform3f(lights[1].lightColorUniformLocation, 0.4f, 0.8f, 1.0f);
 	glUniform3f(lights[1].specularLightColorUniformLocation, 0.4f, 0.8f, 1.0f);
 
@@ -288,20 +292,53 @@ void display(void) {
 void reshape(int w, int h) {
 	glViewport(0, 0, w, h);
 }
-int oldX = -1, oldY = -1;
+int previousX = 0, previousY = 0, currentX = 0, currentY = 0;
+bool controllerOn = false;
+Cvec3 getArcBallVector(int x, int y) {
+	Cvec3 point = Cvec3((double)x / (double)windowWidth - 0.5,
+						(double)y / (double)windowHeight - 0.5, 0);
+	point[1] = -point[1];
+	double square = point[0] * point[0] + point[1] * point[1];
+	if (square <= 0.25) {
+		point[2] = sqrt(0.25 - square);
+	}
+	else {
+		normalize(point);
+	}
+	std::cout << point[0] << "," << point[1] << "," << point[2] << std::endl;
+	return point;
+}
+
 void mouse(int button, int state, int x, int y) {
-	std::cout << button << "," << state << std::endl;
-	oldX = x;
-	oldY = y;
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		controllerOn = true;
+		previousX = x;
+		previousY = y;
+		currentX = x;
+		currentY = y;
+	}
+	else {
+		controllerOn = false;
+	}
 }
 void mouseMove(int x, int y) {
-	int deltaX = x - oldX;
-	int deltaY = y - oldY;
-	double speed = 0.5;
-	Quat rotation = Quat::makeXRotation(-deltaY * speed) * Quat::makeYRotation(-deltaX * speed);
-	eyeMatrix = quatToMatrix(rotation) * eyeMatrix;
-	oldX = x;
-	oldY = y;
+	if (controllerOn) {
+		currentX = x;
+		currentY = y;
+		if (currentX != previousX || currentY != previousY) {
+			Cvec3 vA = getArcBallVector(previousX, previousY);
+			Cvec3 vB = getArcBallVector(currentX, currentY);
+			Quat qA(0, vB);
+			Quat qB(0, -vA);
+			Quat rotation(qB * qA);
+			/*for (size_t i = 0; i < myObjects.size(); i++) {
+				myObjects[i].transform.rotation += rotation;
+			}*/
+			eyeMatrix = quatToMatrix(rotation) * eyeMatrix;
+			previousX = currentX;
+			previousY = currentY;
+		}
+	}
 }
 void idle(void) {
 	glutPostRedisplay();
@@ -356,6 +393,7 @@ void init() {
 	testObject->geometry->loadDiffuseTexture("./Monk_D.tga");
 	testObject->geometry->loadSpecularTexture("./Monk_S.tga");
 	testObject->geometry->loadNormalTexture("./Monk_N.tga");
+	testObject->transform.translation = Cvec3(0.0, -5.0, 0.0);
 	myObjects.push_back(*testObject);
 	
 }
@@ -363,7 +401,7 @@ void init() {
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(windowWidth, windowHeight);
 	glutCreateWindow("Assignment3");
 
 	glutDisplayFunc(display);

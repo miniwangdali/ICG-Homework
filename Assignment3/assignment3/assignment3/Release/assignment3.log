@@ -1,9 +1,10 @@
-﻿  glsupport.cpp
-  main.cpp
+﻿  main.cpp
 main.cpp(110): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 main.cpp(112): warning C4267: 'argument': conversion from 'size_t' to 'unsigned short', possible loss of data
   Generating code
-  All 2098 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  3 of 2098 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   assignment3.vcxproj -> F:\学习资料\留学\Interactive Computer Graphics\ICG-Homework\Assignment3\assignment3\Release\assignment3.exe
   assignment3.vcxproj -> F:\学习资料\留学\Interactive Computer Graphics\ICG-Homework\Assignment3\assignment3\Release\assignment3.pdb (Full PDB)

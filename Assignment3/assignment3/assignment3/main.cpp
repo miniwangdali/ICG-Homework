@@ -30,8 +30,8 @@ GLuint diffuseTextureUniformLocation;
 GLuint specularTextureUniformLocation;
 GLuint normalTextureUniformLocation;
 
-int windowHeight = 800;
-int windowWidth = 800;
+int windowHeight = 1024;
+int windowWidth = 1024;
 
 struct Light {
 	GLuint lightPositionUniformLocation;
@@ -393,8 +393,18 @@ void init() {
 	testObject->geometry->loadDiffuseTexture("./Monk_D.tga");
 	testObject->geometry->loadSpecularTexture("./Monk_S.tga");
 	testObject->geometry->loadNormalTexture("./Monk_N.tga");
-	testObject->transform.translation = Cvec3(0.0, -5.0, 0.0);
+	testObject->transform.translation = Cvec3(-5.0, -5.0, 0.0);
+	testObject->transform.rotation = Quat::makeYRotation(90.0);
 	myObjects.push_back(*testObject);
+
+	Object* testObject2 = new Object();
+	testObject2->geometry = new Geometry("./Monk_Giveaway_Fixed.obj");
+	testObject2->geometry->loadDiffuseTexture("./Monk_D.tga");
+	testObject2->geometry->loadSpecularTexture("./Monk_S.tga");
+	testObject2->geometry->loadNormalTexture("./Monk_N.tga");
+	testObject2->transform.translation = Cvec3(5.0, -5.0, 0.0);
+	testObject2->transform.rotation = Quat::makeYRotation(-90.0);
+	myObjects.push_back(*testObject2);
 	
 }
 

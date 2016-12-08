@@ -263,19 +263,41 @@ Matrix4 makeLookAt(Cvec3 eye, Cvec3 center, Cvec3 up) {
 
 std::vector<Object> myObjects;
 
-GLuint framebuffer;
-GLuint frameBufferTexture;
-GLuint depthBufferTexture;
-GLuint screenTrianglesPositionBuffer;
-GLuint screenTrianglesUVBuffer;
-GLuint screenTrianglesProgram;
-GLuint screenFramebufferUniform;
-GLuint screenTrianglesPositionAttribute;
-GLuint screenTrianglesTexCoordAttribute;
-GLuint resolutionUniform;
+GLuint FXAAFrameBuffer;
+GLuint FXAAFrameBufferTexture;
+GLuint FXAADepthBufferTexture;
+GLuint FXAAScreenPositionBuffer;
+GLuint FXAAScreenUVBuffer;
+GLuint FXAAScreenProgram;
+GLuint FXAAScreenFrameBufferUnifrom;
+GLuint FXAAScreenPositionAttribute;
+GLuint FXAAScreenTexCoordAttribute;
+GLuint FXAAResolutionUniform;
+
+GLuint GuassianHorizontalFrameBuffer;
+GLuint GuassianHorizontalFrameBufferTexture;
+GLuint GuassianHorizontalDepthBufferTexture;
+GLuint GuassianHorizontalScreenPositionBuffer;
+GLuint GuassianHorizontalScreenUVBuffer;
+GLuint GuassianHorizontalScreenProgram;
+GLuint GuassianHorizontalScreenFrameBufferUnifrom;
+GLuint GuassianHorizontalScreenPositionAttribute;
+GLuint GuassianHorizontalScreenTexCoordAttribute;
+GLuint GuassianHorizontalResolutionUniform;
+
+GLuint GuassianVerticalFrameBuffer;
+GLuint GuassianVerticalFrameBufferTexture;
+GLuint GuassianVerticalDepthBufferTexture;
+GLuint GuassianVerticalScreenPositionBuffer;
+GLuint GuassianVerticalScreenUVBuffer;
+GLuint GuassianVerticalScreenProgram;
+GLuint GuassianVerticalScreenFrameBufferUnifrom;
+GLuint GuassianVerticalScreenPositionAttribute;
+GLuint GuassianVerticalScreenTexCoordAttribute;
+GLuint GuassianVerticalResolutionUniform;
 
 void display(void) {
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, FXAAFrameBuffer);
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_CULL_FACE);
@@ -300,27 +322,73 @@ void display(void) {
 		myObjects[i].Draw();
 	}
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// FXAA
+	glBindFramebuffer(GL_FRAMEBUFFER, GuassianHorizontalFrameBuffer);
+
 	glDisable(GL_CULL_FACE);
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(screenTrianglesProgram);
+	glUseProgram(FXAAScreenProgram);
 
-	glUniform2f(resolutionUniform, windowWidth, windowHeight);
+	glUniform2f(FXAAResolutionUniform, windowWidth, windowHeight);
 
-	glUniform1i(screenFramebufferUniform, 0);
+	glUniform1i(FXAAScreenFrameBufferUnifrom, 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, frameBufferTexture);
+	glBindTexture(GL_TEXTURE_2D, FXAAFrameBufferTexture);
 
-	glBindBuffer(GL_ARRAY_BUFFER, screenTrianglesPositionBuffer);
-	glVertexAttribPointer(screenTrianglesPositionAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(screenTrianglesPositionAttribute);
-	glBindBuffer(GL_ARRAY_BUFFER, screenTrianglesUVBuffer);
-	glVertexAttribPointer(screenTrianglesTexCoordAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(screenTrianglesTexCoordAttribute);
+	glBindBuffer(GL_ARRAY_BUFFER, FXAAScreenPositionBuffer);
+	glVertexAttribPointer(FXAAScreenPositionAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(FXAAScreenPositionAttribute);
+	glBindBuffer(GL_ARRAY_BUFFER, FXAAScreenUVBuffer);
+	glVertexAttribPointer(FXAAScreenTexCoordAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(FXAAScreenTexCoordAttribute);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisableVertexAttribArray(screenTrianglesPositionAttribute);
-	glDisableVertexAttribArray(screenTrianglesTexCoordAttribute);
+	glDisableVertexAttribArray(FXAAScreenPositionAttribute);
+	glDisableVertexAttribArray(FXAAScreenTexCoordAttribute);
+
+	// Guassian Blur - H
+	glBindFramebuffer(GL_FRAMEBUFFER, GuassianVerticalFrameBuffer);
+
+	glDisable(GL_CULL_FACE);
+	glViewport(0, 0, windowWidth, windowHeight);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(GuassianHorizontalScreenProgram);
+
+	glUniform1i(GuassianHorizontalScreenFrameBufferUnifrom, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, GuassianHorizontalFrameBufferTexture);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GuassianHorizontalScreenPositionBuffer);
+	glVertexAttribPointer(GuassianHorizontalScreenPositionAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(GuassianHorizontalScreenPositionAttribute);
+	glBindBuffer(GL_ARRAY_BUFFER, GuassianHorizontalScreenUVBuffer);
+	glVertexAttribPointer(GuassianHorizontalScreenTexCoordAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(GuassianHorizontalScreenTexCoordAttribute);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(GuassianHorizontalScreenPositionAttribute);
+	glDisableVertexAttribArray(GuassianHorizontalScreenTexCoordAttribute);
+
+	// Guassian Blur - V
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glDisable(GL_CULL_FACE);
+	glViewport(0, 0, windowWidth, windowHeight);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(GuassianVerticalScreenProgram);
+
+	glUniform1i(GuassianVerticalScreenFrameBufferUnifrom, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, GuassianVerticalFrameBufferTexture);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GuassianVerticalScreenPositionBuffer);
+	glVertexAttribPointer(GuassianVerticalScreenPositionAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(GuassianVerticalScreenPositionAttribute);
+	glBindBuffer(GL_ARRAY_BUFFER, GuassianVerticalScreenUVBuffer);
+	glVertexAttribPointer(GuassianVerticalScreenTexCoordAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(GuassianVerticalScreenTexCoordAttribute);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(GuassianVerticalScreenPositionAttribute);
+	glDisableVertexAttribArray(GuassianVerticalScreenTexCoordAttribute);
 
 	glutSwapBuffers();
 }
@@ -397,8 +465,14 @@ void init() {
 	program = glCreateProgram();
 	readAndCompileShader(program, "vertex.glsl", "fragment.glsl");
 
-	screenTrianglesProgram = glCreateProgram();
-	readAndCompileShader(screenTrianglesProgram, "fxaa.vertex.glsl", "fxaa.fragment.glsl");
+	FXAAScreenProgram = glCreateProgram();
+	readAndCompileShader(FXAAScreenProgram, "fxaa.vertex.glsl", "fxaa.fragment.glsl");
+
+	GuassianHorizontalScreenProgram = glCreateProgram();
+	readAndCompileShader(GuassianHorizontalScreenProgram, "guassianBlur.vertex.glsl", "guassianHorizontalBlur.fragment.glsl");
+
+	GuassianVerticalScreenProgram = glCreateProgram();
+	readAndCompileShader(GuassianVerticalScreenProgram, "guassianBlur.vertex.glsl", "guassianVerticalBlur.fragment.glsl");
 
 	// get attributes
 	positionAttribute = glGetAttribLocation(program, "position");
@@ -423,10 +497,18 @@ void init() {
 	lights[1].specularLightColorUniformLocation = glGetUniformLocation(program, "lights[1].specularLightColor");
 
 
-	screenTrianglesPositionAttribute = glGetAttribLocation(screenTrianglesProgram, "position");
-	screenTrianglesTexCoordAttribute = glGetAttribLocation(screenTrianglesProgram, "texCoord");
-	screenFramebufferUniform = glGetUniformLocation(screenTrianglesProgram, "screenFramebuffer");
-	resolutionUniform = glGetUniformLocation(screenTrianglesProgram, "resolution");
+	FXAAScreenPositionAttribute = glGetAttribLocation(FXAAScreenProgram, "position");
+	FXAAScreenTexCoordAttribute = glGetAttribLocation(FXAAScreenProgram, "texCoord");
+	FXAAScreenFrameBufferUnifrom = glGetUniformLocation(FXAAScreenProgram, "screenFramebuffer");
+	FXAAResolutionUniform = glGetUniformLocation(FXAAScreenProgram, "resolution");
+
+	GuassianHorizontalScreenPositionAttribute = glGetAttribLocation(GuassianHorizontalScreenProgram, "position");
+	GuassianHorizontalScreenTexCoordAttribute = glGetAttribLocation(GuassianHorizontalScreenProgram, "texCoord");
+	GuassianHorizontalScreenFrameBufferUnifrom = glGetUniformLocation(GuassianHorizontalScreenProgram, "screenFramebuffer");
+
+	GuassianVerticalScreenPositionAttribute = glGetAttribLocation(GuassianVerticalScreenProgram, "position");
+	GuassianVerticalScreenTexCoordAttribute = glGetAttribLocation(GuassianVerticalScreenProgram, "texCoord");
+	GuassianVerticalScreenFrameBufferUnifrom = glGetUniformLocation(GuassianVerticalScreenProgram, "screenFramebuffer");
 
 	eyeMatrix = makeLookAt(Cvec3(0.0, 5.0, 20.0), Cvec3(0.0, 5.0, 0.0), Cvec3(0.0, 1.0, 0.0));
 	
@@ -450,28 +532,69 @@ void init() {
 	testObject2->transform.rotation = Quat::makeYRotation(-90.0);
 	myObjects.push_back(*testObject2);
 	
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glGenFramebuffers(1, &FXAAFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, FXAAFrameBuffer);
 
-	glGenTextures(1, &frameBufferTexture);
-	glBindTexture(GL_TEXTURE_2D, frameBufferTexture);
+	glGenTextures(1, &FXAAFrameBufferTexture);
+	glBindTexture(GL_TEXTURE_2D, FXAAFrameBufferTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, frameBufferTexture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, FXAAFrameBufferTexture, 0);
 
-	glGenTextures(1, &depthBufferTexture);
-	glBindTexture(GL_TEXTURE_2D, depthBufferTexture);
+	glGenTextures(1, &FXAADepthBufferTexture);
+	glBindTexture(GL_TEXTURE_2D, FXAADepthBufferTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, windowWidth, windowHeight);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferTexture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, FXAADepthBufferTexture, 0);
 
 	//// Set the list of draw buffers.
 	//GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
 	//glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glGenFramebuffers(1, &GuassianHorizontalFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, GuassianHorizontalFrameBuffer);
+
+	glGenTextures(1, &GuassianHorizontalFrameBufferTexture);
+	glBindTexture(GL_TEXTURE_2D, GuassianHorizontalFrameBufferTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, GuassianHorizontalFrameBufferTexture, 0);
+
+	glGenTextures(1, &GuassianHorizontalDepthBufferTexture);
+	glBindTexture(GL_TEXTURE_2D, GuassianHorizontalDepthBufferTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, windowWidth, windowHeight);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, GuassianHorizontalDepthBufferTexture, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glGenFramebuffers(1, &GuassianVerticalFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, GuassianVerticalFrameBuffer);
+
+	glGenTextures(1, &GuassianVerticalFrameBufferTexture);
+	glBindTexture(GL_TEXTURE_2D, GuassianVerticalFrameBufferTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, GuassianVerticalFrameBufferTexture, 0);
+
+	glGenTextures(1, &GuassianVerticalDepthBufferTexture);
+	glBindTexture(GL_TEXTURE_2D, GuassianVerticalDepthBufferTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, windowWidth, windowHeight);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, GuassianVerticalDepthBufferTexture, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 	GLfloat screenTriangleUVs[] = {
 		1.0f, 1.0f,
@@ -490,12 +613,28 @@ void init() {
 		1.0f, 1.0f
 	};
 
-	glGenBuffers(1, &screenTrianglesPositionBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, screenTrianglesPositionBuffer);
+	glGenBuffers(1, &FXAAScreenPositionBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, FXAAScreenPositionBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 12, screenTrianglePosition, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &screenTrianglesUVBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, screenTrianglesUVBuffer);
+	glGenBuffers(1, &FXAAScreenUVBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, FXAAScreenUVBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 12, screenTriangleUVs, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &GuassianHorizontalScreenPositionBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, GuassianHorizontalScreenPositionBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 12, screenTrianglePosition, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &GuassianHorizontalScreenUVBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, GuassianHorizontalScreenUVBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 12, screenTriangleUVs, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &GuassianVerticalScreenPositionBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, GuassianVerticalScreenPositionBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 12, screenTrianglePosition, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &GuassianVerticalScreenUVBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, GuassianVerticalScreenUVBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 12, screenTriangleUVs, GL_STATIC_DRAW);
 }
 

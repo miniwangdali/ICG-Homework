@@ -1,6 +1,6 @@
 ﻿  main.cpp
 f:\学习资料\留学\interactive computer graphics\icg-homework\assignment4\assignment4\assignment4\main.cpp(110): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 f:\学习资料\留学\interactive computer graphics\icg-homework\assignment4\assignment4\assignment4\main.cpp(112): warning C4267: 'argument': conversion from 'size_t' to 'unsigned short', possible loss of data
-f:\学习资料\留学\interactive computer graphics\icg-homework\assignment4\assignment4\assignment4\main.cpp(309): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+f:\学习资料\留学\interactive computer graphics\icg-homework\assignment4\assignment4\assignment4\main.cpp(333): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
   assignment4.vcxproj -> F:\学习资料\留学\Interactive Computer Graphics\ICG-Homework\Assignment4\assignment4\Debug\assignment4.exe
   assignment4.vcxproj -> F:\学习资料\留学\Interactive Computer Graphics\ICG-Homework\Assignment4\assignment4\Debug\assignment4.pdb (Partial PDB)

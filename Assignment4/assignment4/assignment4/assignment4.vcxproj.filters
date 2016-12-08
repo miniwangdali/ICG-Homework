@@ -53,5 +53,8 @@
     <None Include="vertex.glsl" />
     <None Include="fxaa.vertex.glsl" />
     <None Include="fxaa.fragment.glsl" />
+    <None Include="guassianHorizontalBlur.fragment.glsl" />
+    <None Include="guassianBlur.vertex.glsl" />
+    <None Include="guassianVerticalBlur.fragment.glsl" />
   </ItemGroup>
 </Project>

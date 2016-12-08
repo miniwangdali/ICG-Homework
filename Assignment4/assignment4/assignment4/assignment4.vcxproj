@@ -133,6 +133,9 @@
     <None Include="fragment.glsl" />
     <None Include="fxaa.fragment.glsl" />
     <None Include="fxaa.vertex.glsl" />
+    <None Include="guassianHorizontalBlur.fragment.glsl" />
+    <None Include="guassianBlur.vertex.glsl" />
+    <None Include="guassianVerticalBlur.fragment.glsl" />
     <None Include="vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

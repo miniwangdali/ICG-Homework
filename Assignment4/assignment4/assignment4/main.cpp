@@ -272,12 +272,13 @@ GLuint screenTrianglesProgram;
 GLuint screenFramebufferUniform;
 GLuint screenTrianglesPositionAttribute;
 GLuint screenTrianglesTexCoordAttribute;
+GLuint resolutionUniform;
 
 void display(void) {
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	glEnable(GL_CULL_FACE);
 	glUseProgram(program);
 
 	Matrix4 projectionMatrix;
@@ -298,11 +299,14 @@ void display(void) {
 	for (size_t i = 0; i < myObjects.size(); i++) {
 		myObjects[i].Draw();
 	}
-	
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_CULL_FACE);
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(screenTrianglesProgram);
+
+	glUniform2f(resolutionUniform, windowWidth, windowHeight);
 
 	glUniform1i(screenFramebufferUniform, 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -420,8 +424,9 @@ void init() {
 
 
 	screenTrianglesPositionAttribute = glGetAttribLocation(screenTrianglesProgram, "position");
-	screenTrianglesTexCoordAttribute = glGetAttribLocation(screenTrianglesProgram, "TexCoord");
+	screenTrianglesTexCoordAttribute = glGetAttribLocation(screenTrianglesProgram, "texCoord");
 	screenFramebufferUniform = glGetUniformLocation(screenTrianglesProgram, "screenFramebuffer");
+	resolutionUniform = glGetUniformLocation(screenTrianglesProgram, "resolution");
 
 	eyeMatrix = makeLookAt(Cvec3(0.0, 5.0, 20.0), Cvec3(0.0, 5.0, 0.0), Cvec3(0.0, 1.0, 0.0));
 	
@@ -463,10 +468,9 @@ void init() {
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, windowWidth, windowHeight);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferTexture, 0);
 
-	// Set the list of draw buffers.
-	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
+	//// Set the list of draw buffers.
+	//GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	//glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	GLfloat screenTriangleUVs[] = {
@@ -499,7 +503,7 @@ int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(windowWidth, windowHeight);
-	glutCreateWindow("Assignment3");
+	glutCreateWindow("Assignment4");
 
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
